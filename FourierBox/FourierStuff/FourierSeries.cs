@@ -11,23 +11,26 @@
     {
         private readonly Complex[] _complexes;
         private SineSeries _sineSeries;
+
+
         public FourierSeries(IEnumerable<double> samples)
         {
             _complexes = samples.Select(x => new Complex(x, 0))
                                 .ToArray();
+
             var dft = new MathNet.Numerics.IntegralTransforms.Algorithms.DiscreteFourierTransform();
             dft.BluesteinForward(_complexes, FourierOptions.NoScaling);
         }
-        public FourierSeries(IEnumerable<double> samples, int i)
-            : this(samples)
-        {
-            if (i <= 0)
-                i = 1;
-            for (int j = i; j < _complexes.Length; j++)
-            {
-                _complexes[j] = 0;
-            }
-        }
+        //public FourierSeries(IEnumerable<double> samples, int i)
+        //    : this(samples)
+        //{
+        //    if (i <= 0)
+        //        i = 1;
+        //    for (int j = i; j < _complexes.Length; j++)
+        //    {
+        //        _complexes[j] = 0;
+        //    }
+        //}
         public SineSeries SineSeries
         {
             get
@@ -49,7 +52,7 @@
         }
         public double Evaluate(double x)
         {
-            return SineSeries.Evaluate(x);
+            return SineSeries.Evaluate(2 * Math.PI * x / _complexes.Count());
         }
         public Point[] Spectrum
         {

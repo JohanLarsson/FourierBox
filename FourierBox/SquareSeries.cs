@@ -4,11 +4,18 @@
 
     public class SquareSeries : IFunction
     {
+        public SquareSeries(double start, double period)
+        {
+            Start = start;
+            Period = period;
+        }
+        public double Start { get; private set; }
+        public double Period { get; private set; }
         public double Evaluate(double x)
         {
-            if (x < Math.PI/2)
-                return 0;
-            if(x<1.5*Math.PI)
+            double diff = Math.Abs(x - Start);
+            double d = diff%Period;
+            if (d > Period/2)
                 return 1;
             return 0;
         }

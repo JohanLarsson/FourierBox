@@ -24,7 +24,7 @@
                     <oxy:LinearAxis Position="Left" Minimum="{Binding MinY}" Maximum="{Binding MaxY}"/>
                 </oxy:Plot.Axes>
                 <oxy:Plot.Series>
-                    <oxy:LineSeries ItemsSource="{Binding DataPoints}" Title="{Binding SelectedSample}" 
+                    <oxy:LineSeries ItemsSource="{Binding DataPoints}" Title="{Binding SelectedSample.Name}" 
                                     MarkerType="Circle" MarkerFill="Red" StrokeThickness="0"/>
                     <oxy:LineSeries ItemsSource="{Binding FourierPoints}" Smooth="True"/>
                 </oxy:Plot.Series>

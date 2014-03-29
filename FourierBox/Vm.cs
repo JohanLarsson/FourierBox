@@ -19,23 +19,33 @@
             DataPoints = new List<DataPoint>();
             FourierPoints = new List<DataPoint>();
             Spectrum = new List<DataPoint>();
-            var sine = new SineSeries(new SineParameters(1, 1, 0));
-            var cos = new SineSeries(new SineParameters(1, 1, Math.PI/2));
-            var offsetSine = new SineSeries(new SineParameters(1, 0, 0), new SineParameters(1, 1, 0));
-            var hfSine = new SineSeries(new SineParameters(1, 5, 0));
+            MinX = 6;
+            MaxX = 16;
+            var onePeriod = new SineSeries(SineParameters.FromPeriod(1, MaxX - MinX, 0));
+            var twoPeriods = new SineSeries(SineParameters.FromPeriod(1, (MaxX - MinX) / 2.0, 0));
+            var tenPeriods = new SineSeries(SineParameters.FromPeriod(1, (MaxX - MinX) / 10.0, 0));
+            var notPeriod = new SineSeries(SineParameters.FromPeriod(1, 0.7 * (MaxX - MinX), 0));
+
+            var cos = new SineSeries(SineParameters.FromPeriod(1, (MaxX - MinX), Math.PI / 2));
+            var offsetSine = new SineSeries(new SineParameters(1, 0, 0), SineParameters.FromPeriod(1, MaxX - MinX, 0));
+
             _functions = new List<SampleData>
             {
-                new SampleData(sine, sine.ToString()),
-                new SampleData(cos, cos.ToString()),
-                new SampleData(offsetSine, offsetSine.ToString()),
-                new SampleData(hfSine, hfSine.ToString()),
-                new SampleData(new NoisySine(sine, 0.1), "noisy " + hfSine.ToString()),
-                new SampleData(new SquareSeries(), "Square"),
+                new SampleData(onePeriod, "One period"),
+                new SampleData(twoPeriods, "Two periods"),
+                new SampleData(tenPeriods, "Ten periods"),
+                new SampleData(notPeriod, "0.7 periods"),
+                new SampleData(cos, "cos"),
+                new SampleData(offsetSine, "offset"),
+                new SampleData(new NoisySine(onePeriod, 0.1), "noisy sine"),
+                new SampleData(new NoisySine(onePeriod, 2), "really noisy sine"),
+                new SampleData(new SquareSeries(0,5), "Square"),
                 new SampleData(new Polynom(0, 1), "y = x"),
-                new SampleData(new NoiseSeries(1), "noise"),
+                new SampleData(new NoiseSeries(1), "random noise"),
             };
             _selectedSample = _functions.First();
-            NumberOfPoints = 32;
+
+            NumberOfPoints = 10;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -54,20 +64,8 @@
                 Update();
             }
         }
-        public double MinX
-        {
-            get
-            {
-                return DataPoints.Min(x => x.X);
-            }
-        }
-        public double MaxX
-        {
-            get
-            {
-                return DataPoints.Max(x => x.X);
-            }
-        }
+        public int MinX { get; private set; }
+        public int MaxX { get; private set; }
         public double MinY
         {
             get
@@ -125,13 +123,14 @@
         private void Update()
         {
             DataPoints.Clear();
-            var xs = Enumerable.Range(0, NumberOfPoints)
-                               .Select(x => 2 * Math.PI * (((double)x) / NumberOfPoints))
+            double range = MaxX - MinX;
+            var xs = Enumerable.Range(0, NumberOfPoints + 1)
+                               .Select(x => MinX + (x * range) / (NumberOfPoints))
                                .ToArray();
             DataPoints.AddRange(xs.Select(x => new DataPoint(x, SelectedSample.Function.Evaluate(x))));
-            FourierSeries = new FourierSeries(DataPoints.Select(p => p.Y));
+            FourierSeries = new FourierSeries(DataPoints.Take(NumberOfPoints).Select(p => p.Y));
             FourierPoints.Clear();
-            FourierPoints.AddRange(xs.Select(x => new DataPoint(x, FourierSeries.Evaluate(x))));
+            FourierPoints.AddRange(xs.Select((x, i) => new DataPoint(x, FourierSeries.Evaluate(i))));
             Spectrum.Clear();
             Spectrum.AddRange(FourierSeries.Spectrum.Select(p => new DataPoint(p.X, p.Y)));
             OnPropertyChanged("MinX");
