@@ -1,0 +1,36 @@
+﻿<Window x:Class="FourierBox.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:oxy="http://oxyplot.codeplex.com" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fourierBox="clr-namespace:FourierBox"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525" 
+        d:DataContext="{d:DesignInstance fourierBox:Vm}">
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top">
+            <ComboBox ItemsSource="{Binding SineSerieses}" SelectedItem="{Binding SineSeries}"/>
+            <Slider Minimum="3" Maximum="512" Value="{Binding NumberOfPoints}"/>
+        </DockPanel>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <oxy:Plot x:Name="Plot" Title="Points">
+                <oxy:Plot.Axes>
+                    <oxy:LinearAxis Position="Bottom" Minimum="{Binding MinX}" Maximum="{Binding MaxX}"/>
+                    <oxy:LinearAxis Position="Left" Minimum="{Binding MinY}" Maximum="{Binding MaxY}"/>
+                </oxy:Plot.Axes>
+                <oxy:Plot.Series>
+                    <oxy:LineSeries ItemsSource="{Binding DataPoints}" Title="{Binding SineSeries}" Smooth="True"/>
+                    <oxy:LineSeries ItemsSource="{Binding FourierPoints}" Smooth="True"/>
+                </oxy:Plot.Series>
+            </oxy:Plot>
+            <oxy:Plot Grid.Row="1" x:Name="Spectrum" Title="Spectrum">
+                <oxy:ColumnSeries ItemsSource="{Binding Spectrum}" ValueField="Y" />
+            </oxy:Plot>
+        </Grid>
+    </DockPanel>
+</Window>
