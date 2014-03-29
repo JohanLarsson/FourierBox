@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FourierBox
 {
-    public class Polynom
+    public class Polynom : IFunction
     {
         public Polynom(params double[] coefficients)
         {
@@ -33,7 +33,7 @@ namespace FourierBox
             return new Polynom(coffs);
         }
         public double[] Coefficients { get; private set; }
-        public double CalcY(double x)
+        public double Evaluate(double x)
         {
             double y = 0;
             for (int i = 0; i < Coefficients.Count(); i++)

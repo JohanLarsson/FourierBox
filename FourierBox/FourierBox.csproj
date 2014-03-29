@@ -72,9 +72,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="FourierSeries.cs" />
+    <Compile Include="FourierStuff\FourierSeries.cs" />
+    <Compile Include="IFunction.cs" />
+    <Compile Include="NoiseSeries.cs" />
+    <Compile Include="NoisySine.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="SineSeries.cs" />
+    <Compile Include="FourierStuff\SineSeries.cs" />
+    <Compile Include="SampleData.cs" />
+    <Compile Include="SquareSeries.cs" />
     <Compile Include="Vm.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -84,7 +89,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SineParameters.cs" />
+    <Compile Include="FourierStuff\SineParameters.cs" />
     <Compile Include="Polynom.cs" />
     <Compile Include="ExpressionReader.cs" />
     <Compile Include="MainWindow.xaml.cs">

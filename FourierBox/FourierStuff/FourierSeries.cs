@@ -7,7 +7,7 @@
     using System.Windows;
     using MathNet.Numerics.IntegralTransforms;
 
-    public class FourierSeries
+    public class FourierSeries : IFunction
     {
         private readonly Complex[] _complexes;
         private SineSeries _sineSeries;
@@ -63,7 +63,9 @@
 
         private static double Amplitude(Complex[] complexes, int index)
         {
-            return (index + 1) * complexes[index].Magnitude / complexes.Length;
+            if (index == 0)
+                return complexes[index].Magnitude / complexes.Length;
+            return 2 * complexes[index].Magnitude / complexes.Length;
         }
     }
 }

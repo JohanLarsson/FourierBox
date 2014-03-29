@@ -9,7 +9,7 @@
         d:DataContext="{d:DesignInstance fourierBox:Vm}">
     <DockPanel>
         <DockPanel DockPanel.Dock="Top">
-            <ComboBox ItemsSource="{Binding SineSerieses}" SelectedItem="{Binding SineSeries}"/>
+            <ComboBox ItemsSource="{Binding Functions}" SelectedItem="{Binding SelectedSample}" DisplayMemberPath="Name"/>
             <Slider Minimum="3" Maximum="512" Value="{Binding NumberOfPoints}"/>
         </DockPanel>
 
@@ -24,7 +24,8 @@
                     <oxy:LinearAxis Position="Left" Minimum="{Binding MinY}" Maximum="{Binding MaxY}"/>
                 </oxy:Plot.Axes>
                 <oxy:Plot.Series>
-                    <oxy:LineSeries ItemsSource="{Binding DataPoints}" Title="{Binding SineSeries}" Smooth="True"/>
+                    <oxy:LineSeries ItemsSource="{Binding DataPoints}" Title="{Binding SelectedSample}" 
+                                    MarkerType="Circle" MarkerFill="Red" StrokeThickness="0"/>
                     <oxy:LineSeries ItemsSource="{Binding FourierPoints}" Smooth="True"/>
                 </oxy:Plot.Series>
             </oxy:Plot>

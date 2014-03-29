@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Text;
 
-    public class SineSeries
+    public class SineSeries : IFunction
     {
         private readonly SineParameters[] _sines;
         public SineSeries(params SineParameters[] sines)

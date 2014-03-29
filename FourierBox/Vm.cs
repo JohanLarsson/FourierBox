@@ -11,20 +11,30 @@
 
     public class Vm : INotifyPropertyChanged
     {
-        private SineSeries _sineSeries;
+        private SampleData _selectedSample;
         private int _numberOfPoints;
-        private IEnumerable<SineSeries> _sineSerieses;
+        private readonly IEnumerable<SampleData> _functions;
         public Vm()
         {
             DataPoints = new List<DataPoint>();
             FourierPoints = new List<DataPoint>();
             Spectrum = new List<DataPoint>();
-            _sineSerieses = new List<SineSeries>
+            var sine = new SineSeries(new SineParameters(1, 1, 0));
+            var cos = new SineSeries(new SineParameters(1, 1, Math.PI/2));
+            var offsetSine = new SineSeries(new SineParameters(1, 0, 0), new SineParameters(1, 1, 0));
+            var hfSine = new SineSeries(new SineParameters(1, 5, 0));
+            _functions = new List<SampleData>
             {
-                new SineSeries(new SineParameters(1, 1, 0)),
-                new SineSeries(new SineParameters(1, 0, 0),new SineParameters(1, 1, 0)),
+                new SampleData(sine, sine.ToString()),
+                new SampleData(cos, cos.ToString()),
+                new SampleData(offsetSine, offsetSine.ToString()),
+                new SampleData(hfSine, hfSine.ToString()),
+                new SampleData(new NoisySine(sine, 0.1), "noisy " + hfSine.ToString()),
+                new SampleData(new SquareSeries(), "Square"),
+                new SampleData(new Polynom(0, 1), "y = x"),
+                new SampleData(new NoiseSeries(1), "noise"),
             };
-            _sineSeries = _sineSerieses.First();
+            _selectedSample = _functions.First();
             NumberOfPoints = 32;
         }
 
@@ -74,20 +84,20 @@
         }
         public List<DataPoint> DataPoints { get; private set; }
         public List<DataPoint> FourierPoints { get; private set; }
-        public IEnumerable<SineSeries> SineSerieses
+        public IEnumerable<SampleData> Functions
         {
-            get { return _sineSerieses; }
+            get { return _functions; }
         }
-        public SineSeries SineSeries
+        public SampleData SelectedSample
         {
-            get { return _sineSeries; }
+            get { return _selectedSample; }
             private set
             {
-                if (Equals(value, _sineSeries))
+                if (Equals(value, _selectedSample))
                 {
                     return;
                 }
-                _sineSeries = value;
+                _selectedSample = value;
                 OnPropertyChanged();
                 Update();
             }
@@ -118,7 +128,7 @@
             var xs = Enumerable.Range(0, NumberOfPoints)
                                .Select(x => 2 * Math.PI * (((double)x) / NumberOfPoints))
                                .ToArray();
-            DataPoints.AddRange(xs.Select(x => new DataPoint(x, SineSeries.Evaluate(x))));
+            DataPoints.AddRange(xs.Select(x => new DataPoint(x, SelectedSample.Function.Evaluate(x))));
             FourierSeries = new FourierSeries(DataPoints.Select(p => p.Y));
             FourierPoints.Clear();
             FourierPoints.AddRange(xs.Select(x => new DataPoint(x, FourierSeries.Evaluate(x))));
